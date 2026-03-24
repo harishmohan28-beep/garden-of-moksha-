@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Lotus Sutras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;600;900&family=Noto+Serif+Devanagari:wght@300;400;700&family=UnifrakturMaguntia&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════════════
+   ROOT
+═══════════════════════════════════════════ */
+:root {
+  --void:       #060406;
+  --deep:       #0c080c;
+  --smoke:      #1a101a;
+  --blood:      #6b0f0f;
+  --crimson:    #9b1c1c;
+  --rose:       #c45c5c;
+  --gold:       #c8a44a;
+  --gold-pale:  #e2c97a;
+  --ivory:      #ede5d8;
+  --parchment:  #d4c9b8;
+  --ash:        #8a8080;
+  --lotus:      #c49ab0;
+  --lotus-dark: #7a3a5a;
+  --sacred:     #e8d5a0;
+  --profane:    #8b1a1a;
+
+  /* Part-specific */
+  --part-a-bg:  #080408;
+  --part-b-bg:  #06080a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--void);
+  color: var(--ivory);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+::selection { background: var(--blood); color: var(--gold-pale); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--blood); }
+
+/* ─── FILM GRAIN ─── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9000; opacity: 0.5; mix-blend-mode: overlay;
+}
+
+/* ═══════════════════════════════════════════
+   GATE — OPENING VEIL
+═══════════════════════════════════════════ */
+#gate {
+  position: fixed; inset: 0; z-index: 8000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--void);
+  transition: opacity 2s ease, visibility 2s ease;
+}
+#gate.away { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.gate-epigraph {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+  color: var(--ash);
+  letter-spacing: 0.1em;
+  text-align: center;
+  max-width: 480px;
+  line-height: 1.9;
+  margin-bottom: 64px;
+  opacity: 0;
+  animation: fadeUp 1.5s ease 0.5s forwards;
+}
+.gate-epigraph span {
+  display: block;
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.8rem;
+  color: var(--lotus-dark);
+  margin-top: 10px;
+  letter-spacing: 0.15em;
+}
+
+.gate-lotus-wrap {
+  position: relative;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeUp 1.5s ease 1s forwards;
+}
+.gate-lotus-wrap:hover .gate-lotus-svg {
+  filter: drop-shadow(0 0 40px rgba(200,164,74,0.6)) drop-shadow(0 0 80px rgba(155,28,28,0.3));
+  transform: scale(1.05);
+}
+.gate-lotus-svg {
+  width: 160px; height: 160px;
+  transition: all 0.5s ease;
+  filter: drop-shadow(0 0 20px rgba(200,164,74,0.25));
+  animation: breathe 5s ease-in-out infinite 2.5s;
+}
+@keyframes breathe {
+  0%,100% { filter: drop-shadow(0 0 20px rgba(200,164,74,0.25)); }
+  50%      { filter: drop-shadow(0 0 40px rgba(200,164,74,0.5)) drop-shadow(0 0 60px rgba(155,28,28,0.2)); }
+}
+
+.gate-instruction {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  color: var(--lotus-dark);
+  text-transform: uppercase;
+  margin-top: 40px;
+  opacity: 0;
+  animation: fadeUp 1s ease 2s forwards, pulse 3s ease-in-out 3s infinite;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+#main {
+  opacity: 0;
+  transition: opacity 2s ease 0.3s;
+}
+#main.revealed { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 20px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(6,4,6,0.97) 0%, transparent 100%);
+}
+.nav-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-brand small {
+  display: block;
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.65rem;
+  color: var(--ash);
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+.nav-items {
+  display: flex; gap: 40px; list-style: none;
+}
+.nav-items a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--ash);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-items a:hover { color: var(--gold); }
+.nav-part-a { color: var(--profane) !important; }
+.nav-part-b { color: var(--lotus-dark) !important; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 40px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-om {
+  position: absolute;
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: clamp(280px, 45vw, 620px);
+  color: rgba(200,164,74,0.025);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; user-select: none;
+  animation: omPulse 10s ease-in-out infinite;
+  line-height: 1;
+}
+@keyframes omPulse {
+  0%,100% { opacity: 0.025; transform: translate(-50%,-50%) scale(1); }
+  50%      { opacity: 0.045; transform: translate(-50%,-50%) scale(1.01); }
+}
+
+.hero-gita {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+  color: var(--ash);
+  letter-spacing: 0.06em;
+  line-height: 1.9;
+  max-width: 560px;
+  margin-bottom: 60px;
+  position: relative; z-index: 1;
+}
+.hero-gita cite {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--lotus-dark);
+  margin-top: 14px;
+  font-style: normal;
+}
+
+.hero-rule {
+  width: 1px; height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  margin: 0 auto 60px;
+  position: relative; z-index: 1;
+}
+
+.hero-title {
+  position: relative; z-index: 1;
+}
+.hero-title-the {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  color: var(--ash);
+  letter-spacing: 0.4em;
+  display: block;
+  margin-bottom: 8px;
+}
+.hero-title-main {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: clamp(3rem, 8vw, 7rem);
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+  text-shadow: 0 0 60px rgba(200,164,74,0.2), 0 2px 4px rgba(0,0,0,0.8);
+  letter-spacing: 0.05em;
+}
+.hero-title-sub {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.6rem, 1.2vw, 0.9rem);
+  letter-spacing: 0.5em;
+  color: var(--ivory);
+  display: block;
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+.hero-title-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  color: var(--lotus-dark);
+  display: block;
+  margin-top: 10px;
+  letter-spacing: 0.1em;
+}
+
+.hero-divider {
+  display: flex; align-items: center; gap: 20px;
+  margin: 60px auto;
+  width: fit-content;
+  position: relative; z-index: 1;
+}
+.hero-divider::before, .hero-divider::after {
+  content: '';
+  width: 120px; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(200,164,74,0.4));
+}
+.hero-divider::after { transform: scaleX(-1); }
+.hero-divider-symbol {
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0.5;
+}
+
+.hero-structure {
+  display: flex; gap: 80px;
+  justify-content: center;
+  position: relative; z-index: 1;
+}
+.hero-part {
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.hero-part:hover { transform: translateY(-4px); }
+.hero-part-symbol {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+.hero-part-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.hero-part-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+.part-a .hero-part-label { color: var(--profane); }
+.part-a .hero-part-name  { color: var(--rose); }
+.part-b .hero-part-label { color: var(--lotus-dark); }
+.part-b .hero-part-name  { color: var(--lotus); }
+
+.scroll-cue {
+  position: absolute; bottom: 36px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  opacity: 0.5;
+  animation: scrollBob 2.5s ease-in-out infinite;
+}
+.scroll-cue::after {
+  content: '';
+  display: block;
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, var(--ash), transparent);
+  margin: 10px auto 0;
+}
+@keyframes scrollBob {
+  0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.4; }
+  50%      { transform: translateX(-50%) translateY(5px); opacity: 0.8; }
+}
+
+/* ═══════════════════════════════════════════
+   PROLOGUE
+═══════════════════════════════════════════ */
+#prologue {
+  padding: 120px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+.prologue-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 40px;
+}
+.prologue-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--ivory);
+  letter-spacing: 0.1em;
+  margin-bottom: 48px;
+  line-height: 1.3;
+}
+.prologue-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  line-height: 2.1;
+  color: var(--parchment);
+  font-style: italic;
+  text-align: center;
+}
+.prologue-text p { margin-bottom: 24px; }
+
+/* Haiku style */
+.sutra-haiku {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  color: var(--ivory);
+  line-height: 2.2;
+  text-align: center;
+  padding: 40px 0;
+  border-top: 1px solid rgba(200,164,74,0.12);
+  border-bottom: 1px solid rgba(200,164,74,0.12);
+  margin: 40px 0;
+}
+.sutra-haiku-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 24px;
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════
+   PART DIVIDER
+═══════════════════════════════════════════ */
+.part-divider {
+  padding: 100px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.part-divider-inner {
+  position: relative; z-index: 1;
+}
+.part-divider-trident {
+  font-size: clamp(4rem, 10vw, 8rem);
+  display: block;
+  margin: 0 auto 32px;
+  line-height: 1;
+  animation: tridentFloat 5s ease-in-out infinite;
+}
+@keyframes tridentFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.part-divider-part {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
+.part-divider-title {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  display: block;
+  line-height: 1.1;
+}
+.part-divider-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 1rem;
+  display: block;
+  margin-top: 12px;
+  letter-spacing: 0.15em;
+}
+.part-divider-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ash);
+  margin-top: 24px;
+  line-height: 1.8;
+}
+
+/* Part A colors */
+.part-a-divider {
+  background: radial-gradient(ellipse at center, rgba(107,15,15,0.25) 0%, transparent 70%);
+}
+.part-a-divider .part-divider-part { color: var(--profane); }
+.part-a-divider .part-divider-title { color: var(--rose); text-shadow: 0 0 40px rgba(155,28,28,0.4); }
+.part-a-divider .part-divider-sa { color: var(--lotus-dark); }
+.part-a-divider .part-divider-trident { color: var(--blood); filter: drop-shadow(0 0 20px rgba(107,15,15,0.5)); }
+
+/* Part B colors */
+.part-b-divider {
+  background: radial-gradient(ellipse at center, rgba(122,58,90,0.15) 0%, transparent 70%);
+}
+.part-b-divider .part-divider-part { color: var(--lotus-dark); }
+.part-b-divider .part-divider-title { color: var(--sacred); text-shadow: 0 0 40px rgba(232,213,160,0.2); }
+.part-b-divider .part-divider-sa { color: var(--lotus); }
+.part-b-divider .part-divider-trident { color: var(--gold); filter: drop-shadow(0 0 20px rgba(200,164,74,0.4)); }
+
+/* ═══════════════════════════════════════════
+   POEMS SECTION
+═══════════════════════════════════════════ */
+.poems-section {
+  padding: 60px 0 120px;
+}
+
+.poem-entry {
+  max-width: 640px;
+  margin: 0 auto 100px;
+  padding: 0 40px;
+  position: relative;
+}
+
+/* Running head */
+.poem-running-head {
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 40px;
+}
+.poem-running-head::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(200,164,74,0.15));
+}
+.poem-running-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.4em;
+  color: var(--ash);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Poem title */
+.poem-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  color: var(--ivory);
+  line-height: 1.2;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+.poem-title-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.8rem;
+  color: var(--ash);
+  margin-bottom: 32px;
+  display: block;
+  letter-spacing: 0.1em;
+}
+
+/* Poem body */
+.poem-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 2.3;
+  color: var(--parchment);
+}
+.poem-body p { margin-bottom: 8px; }
+
+/* Drop cap for long poems */
+.poem-body.drop-cap p:first-child::first-letter {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 4.5rem;
+  float: left;
+  line-height: 0.75;
+  margin: 6px 10px -4px 0;
+  font-style: normal;
+  color: var(--gold);
+}
+
+/* Part A vs B poem accent lines */
+.part-a .poem-running-head::before { background: linear-gradient(to right, transparent, rgba(155,28,28,0.2)); }
+.part-a .poem-title { color: var(--ivory); }
+.part-a .poem-body { color: rgba(232,213,160,0.8); }
+
+.part-b .poem-running-head::before { background: linear-gradient(to right, transparent, rgba(200,164,74,0.15)); }
+.part-b .poem-title { color: var(--sacred); }
+.part-b .poem-body { color: rgba(212,201,184,0.9); }
+
+/* Haiku / short form */
+.poem-entry.haiku {
+  text-align: center;
+  max-width: 420px;
+}
+.poem-entry.haiku .poem-running-head { justify-content: center; }
+.poem-entry.haiku .poem-running-head::before,
+.poem-entry.haiku .poem-running-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(200,164,74,0.12);
+}
+.poem-entry.haiku .poem-title { font-size: 1.2rem; text-align: center; }
+.poem-entry.haiku .poem-body { font-size: 1.1rem; line-height: 2.5; }
+
+/* Glyph between poems */
+.poem-separator {
+  text-align: center;
+  padding: 16px 0 60px;
+  color: var(--ash);
+  font-size: 0.7rem;
+  letter-spacing: 0.6em;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════
+   PROSE / NARRATIVE SECTIONS
+═══════════════════════════════════════════ */
+.prose-section {
+  max-width: 680px;
+  margin: 0 auto 100px;
+  padding: 0 40px;
+}
+.prose-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 32px;
+}
+.prose-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  color: var(--ivory);
+  letter-spacing: 0.05em;
+  margin-bottom: 32px;
+  line-height: 1.2;
+}
+.prose-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  line-height: 2.1;
+  color: var(--parchment);
+}
+.prose-body p { margin-bottom: 24px; }
+.prose-body p:first-child::first-letter {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 5rem;
+  float: left;
+  line-height: 0.75;
+  margin: 6px 12px -4px 0;
+  color: var(--gold);
+}
+.prose-dialogue {
+  border-left: 2px solid rgba(200,164,74,0.2);
+  padding: 4px 0 4px 24px;
+  margin: 24px 0;
+  color: var(--ivory);
+  font-style: italic;
+}
+.prose-sutra-break {
+  text-align: center;
+  padding: 40px 0;
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  opacity: 0.3;
+  letter-spacing: 0.5em;
+}
+
+/* Hedonic shrine list */
+.hedonic-list {
+  list-style: none;
+  padding: 24px 40px;
+  border: 1px solid rgba(155,28,28,0.2);
+  margin: 32px 0;
+  background: rgba(107,15,15,0.08);
+}
+.hedonic-list li {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ash);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(155,28,28,0.08);
+  line-height: 1.6;
+}
+.hedonic-list li:last-child { border-bottom: none; }
+.hedonic-list li::before {
+  content: '·';
+  color: var(--blood);
+  margin-right: 12px;
+}
+
+/* ═══════════════════════════════════════════
+   CHARACTERS SECTION
+═══════════════════════════════════════════ */
+#characters {
+  padding: 120px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.characters-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+.characters-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 20px;
+}
+.characters-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: var(--ivory);
+  letter-spacing: 0.08em;
+}
+.characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2px;
+}
+.character-card {
+  padding: 48px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+.character-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.4s;
+}
+.character-card:hover::before { opacity: 1; }
+
+.char-jester { background: rgba(107,15,15,0.15); border: 1px solid rgba(107,15,15,0.2); }
+.char-jester::before { background: radial-gradient(ellipse at 30% 50%, rgba(107,15,15,0.3), transparent 70%); }
+.char-jester .char-symbol { color: var(--profane); }
+
+.char-maya { background: rgba(122,58,90,0.12); border: 1px solid rgba(122,58,90,0.2); }
+.char-maya::before { background: radial-gradient(ellipse at 70% 30%, rgba(122,58,90,0.3), transparent 70%); }
+.char-maya .char-symbol { color: var(--lotus); }
+
+.char-cyclops { background: rgba(20,10,5,0.5); border: 1px solid rgba(80,40,10,0.25); }
+.char-cyclops::before { background: radial-gradient(ellipse at 50% 80%, rgba(80,40,10,0.3), transparent 70%); }
+.char-cyclops .char-symbol { color: #8b6914; }
+
+.char-agni { background: rgba(107,50,10,0.12); border: 1px solid rgba(200,100,20,0.15); }
+.char-agni::before { background: radial-gradient(ellipse at 50% 0%, rgba(200,100,20,0.2), transparent 70%); }
+.char-agni .char-symbol { color: #e06020; }
+
+.char-shakti { background: rgba(100,80,150,0.1); border: 1px solid rgba(150,120,200,0.15); }
+.char-shakti::before { background: radial-gradient(ellipse at 50% 100%, rgba(150,120,200,0.2), transparent 70%); }
+.char-shakti .char-symbol { color: #c0a0e0; }
+
+.char-mystic { background: rgba(30,60,40,0.12); border: 1px solid rgba(100,164,74,0.15); }
+.char-mystic::before { background: radial-gradient(ellipse at 50% 20%, rgba(100,164,74,0.15), transparent 70%); }
+.char-mystic .char-symbol { color: var(--gold); }
+
+.char-symbol {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+.char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--ivory);
+  display: block;
+  margin-bottom: 4px;
+}
+.char-name-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.7rem;
+  color: var(--ash);
+  display: block;
+  margin-bottom: 16px;
+}
+.char-arc {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--parchment);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════
+   THEMES / MOTIFS
+═══════════════════════════════════════════ */
+#motifs {
+  padding: 80px 40px 120px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.motifs-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 60px;
+}
+.motif-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px 48px;
+}
+.motif-item {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.motif-item:hover { opacity: 1; }
+.motif-symbol { font-size: 2rem; }
+.motif-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ash);
+}
+.motif-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.65rem;
+  color: var(--lotus-dark);
+}
+
+/* ═══════════════════════════════════════════
+   ABOUT THE BOOK
+═══════════════════════════════════════════ */
+#about {
+  padding: 120px 40px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--void) 0%, rgba(12,8,12,0.8) 50%, var(--void) 100%);
+}
+.about-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 80px;
+  align-items: start;
+}
+.about-left {
+  position: sticky; top: 120px;
+}
+.about-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 24px;
+}
+.about-structure-title {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+.about-structure-item {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(200,164,74,0.08);
+}
+.about-structure-item:last-child { border-bottom: none; }
+.about-si-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.about-si-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ivory);
+}
+.about-si-sa {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 0.7rem;
+  color: var(--lotus-dark);
+  margin-left: 8px;
+}
+
+.about-right {}
+.about-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  line-height: 2.1;
+  color: var(--parchment);
+}
+.about-body p { margin-bottom: 24px; }
+
+/* ═══════════════════════════════════════════
+   ACQUIRE
+═══════════════════════════════════════════ */
+#acquire {
+  padding: 120px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.acquire-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(200,164,74,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.acquire-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.5em;
+  color: var(--ash);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 40px;
+}
+.acquire-title {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--gold);
+  margin-bottom: 16px;
+  text-shadow: 0 0 40px rgba(200,164,74,0.2);
+}
+.acquire-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ash);
+  margin-bottom: 60px;
+  line-height: 1.8;
+}
+.acquire-options {
+  display: flex; gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.acquire-btn {
+  display: inline-block;
+  padding: 14px 40px;
+  border: 1px solid;
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.3s;
+}
+.acquire-btn-primary {
+  border-color: rgba(200,164,74,0.5);
+  color: var(--gold);
+}
+.acquire-btn-primary:hover {
+  background: rgba(200,164,74,0.1);
+  border-color: var(--gold);
+  box-shadow: 0 0 30px rgba(200,164,74,0.1);
+}
+.acquire-btn-secondary {
+  border-color: rgba(154,143,143,0.3);
+  color: var(--ash);
+}
+.acquire-btn-secondary:hover {
+  background: rgba(154,143,143,0.08);
+  color: var(--ivory);
+}
+.acquire-edition-note {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--lotus-dark);
+  margin-top: 32px;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  padding: 60px 40px 40px;
+  text-align: center;
+  border-top: 1px solid rgba(200,164,74,0.06);
+  position: relative;
+}
+.footer-om {
+  font-family: 'Noto Serif Devanagari', serif;
+  font-size: 2rem;
+  color: var(--gold);
+  opacity: 0.3;
+  display: block;
+  margin-bottom: 24px;
+}
+.footer-brand {
+  font-family: 'UnifrakturMaguntia', cursive;
+  font-size: 1.5rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+}
+.footer-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ash);
+  margin-bottom: 32px;
+}
+.footer-links {
+  display: flex; gap: 32px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--ash);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.75rem;
+  color: rgba(138,128,128,0.35);
+}
+.footer-symbols {
+  font-size: 1rem;
+  opacity: 0.2;
+  letter-spacing: 0.5em;
+  margin: 20px 0;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.on { opacity: 1; transform: translateY(0); }
+.reveal-slow { transition-duration: 1.4s; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-items { display: none; }
+  .hero-structure { gap: 40px; flex-direction: column; align-items: center; }
+  .about-inner { grid-template-columns: 1fr; gap: 40px; }
+  .about-left { position: static; }
+  .poem-entry, .prose-section { padding: 0 24px; }
+  .part-divider { padding: 80px 24px; }
+  #characters { padding: 80px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ GATE ════════════════════════════ -->
+<div id="gate">
+  <p class="gate-epigraph">
+    "Those that see me in all things<br/>are never lost to me,<br/>nor am I ever lost to them."
+    <span>— Bhagavad Gita 6.30</span>
+  </p>
+
+  <div class="gate-lotus-wrap" onclick="openVeil()" title="Lift the Veil">
+    <svg class="gate-lotus-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="g1" cx="50%" cy="65%" r="55%">
+          <stop offset="0%" stop-color="#c8a44a" stop-opacity="0.9"/>
+          <stop offset="60%" stop-color="#6b1a1a" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#1a0808" stop-opacity="0.5"/>
+        </radialGradient>
+        <radialGradient id="g2" cx="50%" cy="60%" r="50%">
+          <stop offset="0%" stop-color="#e2c97a" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#3d1515" stop-opacity="0.3"/>
+        </radialGradient>
+        <filter id="glow2"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g filter="url(#glow2)" opacity="0.8">
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(0,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(40,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(80,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(120,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(160,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(200,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(240,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(280,100,100)"/>
+        <ellipse cx="100" cy="55" rx="13" ry="40" fill="url(#g1)" transform="rotate(320,100,100)"/>
+      </g>
+      <circle cx="100" cy="100" r="28" fill="#0c0408" stroke="rgba(200,164,74,0.4)" stroke-width="1"/>
+      <text x="100" y="114" text-anchor="middle" font-family="serif" font-size="30" fill="#c8a44a" filter="url(#glow2)">ॐ</text>
+      <circle cx="100" cy="100" r="38" fill="none" stroke="rgba(200,164,74,0.12)" stroke-width="0.8"/>
+    </svg>
+  </div>
+
+  <span class="gate-instruction">Touch the Lotus · पर्दा उठाओ</span>
+</div>
+
+<!-- ═══════ MAIN ════════════════════════════ -->
+<div id="main">
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-brand">
+      The Lotus Sutras
+      <small>लोटस सूत्र</small>
+    </a>
+    <ul class="nav-items">
+      <li><a href="#prologue">Prologue</a></li>
+      <li><a href="#part-a" class="nav-part-a">Profanity Petals</a></li>
+      <li><a href="#part-b" class="nav-part-b">Sacred Embers</a></li>
+      <li><a href="#characters">Characters</a></li>
+      <li><a href="#acquire">Acquire</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ HERO ══════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg-om">ॐ</div>
+
+    <p class="hero-gita">
+      "Those that see me in all things are never lost to me,<br/>
+      nor am I ever lost to them."
+      <cite>Bhagavad Gita 6.30 &nbsp;·&nbsp; भगवद् गीता</cite>
+    </p>
+
+    <div class="hero-rule"></div>
+
+    <div class="hero-title">
+      <span class="hero-title-the">The</span>
+      <span class="hero-title-main">Lotus Sutras</span>
+      <span class="hero-title-sub">A Book of Profanity &amp; Prayer</span>
+      <span class="hero-title-sa">लोटस सूत्र · अपवित्रता और प्रार्थना की पुस्तक</span>
+    </div>
+
+    <div class="hero-divider">
+      <span class="hero-divider-symbol">🌹</span>
+    </div>
+
+    <div class="hero-structure">
+      <a href="#part-a" class="hero-part part-a" style="text-decoration:none;">
+        <span class="hero-part-symbol">🔱</span>
+        <span class="hero-part-label">Part One</span>
+        <span class="hero-part-name">Profanity Petals</span>
+      </a>
+      <a href="#part-b" class="hero-part part-b" style="text-decoration:none;">
+        <span class="hero-part-symbol">🔱</span>
+        <span class="hero-part-label">Part Two</span>
+        <span class="hero-part-name">Sacred Embers</span>
+      </a>
+    </div>
+
+    <div class="scroll-cue">Descend</div>
+  </section>
+
+  <!-- ═══ PROLOGUE ═══════════════════════════ -->
+  <section id="prologue" style="background: linear-gradient(to bottom, var(--void), rgba(12,4,12,0.6), var(--void));">
+    <div class="prose-section reveal">
+      <span class="prose-label">Prologue · प्रस्तावना</span>
+      <h2 class="prose-title">Behind the Veil is Jest</h2>
+      <div class="prose-body">
+        <p>What is it that you fear, that lies at the bottom of your self? Is it a version of yourself that you detest, that you could never conceive to be true? Or is it an amalgamation of taboo, forbidden vignettes that scar the beauty of your untainted, polished mask, glistening for all to see?</p>
+        <p>Why do we blindfold the Jester, that prances around the mindscape, running with a tongue of scissors and a taped mouth, when all that he has to offer is a comedic sincerity?</p>
+      </div>
+    </div>
+
+    <!-- Jester Sutra haiku -->
+    <div class="poem-entry haiku reveal" style="margin: 0 auto 60px;">
+      <div class="poem-running-head">
+        <span class="poem-running-label">The Sutra of the Grinning Jester · विदूषक सूत्र</span>
+      </div>
+      <div class="poem-body">
+        <p>The highest heathen,</p>
+        <p>wears abstinence on his cheek,</p>
+        <p>but I feast instead.</p>
+      </div>
+    </div>
+
+    <!-- Maithunya prose -->
+    <div class="prose-section reveal">
+      <div class="prose-body">
+        <p>In a blurry elated high, he meanders outside to the Garden of Eros — his beloved Maithunya <span style="font-family:'Noto Serif Devanagari',serif; font-size:0.9rem; color:var(--lotus-dark);">(मथैन्युय)</span>. Riddled with petals of a myriad shades, the nude afterglow of flowers scream the call of a hundred Sirens.</p>
+        <p>The Jester, maniacally tosses another flower corpse into the sky, crumbled jasmine unfurling from his clenched fist. The petals quietly land upon the ground, cradled by the sob of a seraph.</p>
+        <p style="color: var(--rose); font-style: italic; font-size: 1.05rem;">Brutality is the highest form of humor.</p>
+        <p>Yet, a mystical red rose, stands silently in the centre of the Garden, without wailing nor making a sound. Silently. The Jester, with hungry hands, lunges his fist at the beautiful thing. Oozing blood is the outcome, leaking from his fingers.</p>
+      </div>
+    </div>
+
+    <!-- Hedonic Shrine -->
+    <div class="prose-section reveal">
+      <h3 class="prose-title" style="font-size:1.4rem; color: var(--rose);">The Hedonic Shrine</h3>
+      <div class="prose-body">
+        <p>A rotting rafflesia swallows the illusion of the Garden, its colossal petals hovering over the Jester, obscuring the clouds.</p>
+      </div>
+      <ul class="hedonic-list">
+        <li>Bottles of spilled wine</li>
+        <li>Ashed cigarette butts</li>
+        <li>Apsaras clad in a string of cloth</li>
+        <li>Decaying chunks of meat and piles of fish bones</li>
+        <li>Wasted grains of rice, strewn into wet, old clumps</li>
+      </ul>
+      <div class="prose-sutra-break">✦ &nbsp; ॐ &nbsp; ✦</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       PART ONE — PROFANITY PETALS
+  ══════════════════════════════════════════ -->
+  <div id="part-a" class="part-divider part-a-divider">
+    <div class="part-divider-inner reveal">
+      <span class="part-divider-trident">🔱</span>
+      <span class="part-divider-part">Part One · भाग एक</span>
+      <span class="part-divider-title">Profanity Petals</span>
+      <span class="part-divider-sa">अपवित्रता की पंखुड़ियाँ</span>
+      <p class="part-divider-desc">
+        The reversed trident — the descent into indulgence.<br/>
+        The Jester feasts, falls, and is devoured.
+      </p>
+    </div>
+  </div>
+
+  <div class="poems-section">
+
+    <!-- DEBAUCHERY -->
+    <div class="poem-entry part-a reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals I &nbsp;·&nbsp; अपवित्रता</span>
+      </div>
+      <h2 class="poem-title">Debauchery</h2>
+      <span class="poem-title-sa">व्यभिचार &nbsp;·&nbsp; लालफल</span>
+      <div class="poem-body drop-cap">
+        <p>I tried to find God,</p>
+        <p>in the cleavage of a woman.</p>
+        <p>I found his silhouette,</p>
+        <p>in the echo of a moan,</p>
+        <p>the softness of a caress,</p>
+        <p>in between her squeals of joy,</p>
+        <p>and within the folds of her tender flesh.</p>
+        <p>Yet, his fullness remained elusive,</p>
+        <p>and in completion, I was empty.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- MAD MERLOT -->
+    <div class="poem-entry part-a reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals II</span>
+      </div>
+      <h2 class="poem-title">Mad Merlot</h2>
+      <span class="poem-title-sa">मद्य का पागलपन</span>
+      <div class="poem-body">
+        <p>I tried to find God,</p>
+        <p>in the bottom of a bottle.</p>
+        <p>The first sip was the worst,</p>
+        <p>bitter, burning, unpleasant,</p>
+        <p>yet the soothing blur,</p>
+        <p>was the bed indulgence awoke from,</p>
+        <p>stoking the napalm,</p>
+        <p>of relentless pursuit,</p>
+        <p>yet a false image meanders,</p>
+        <p>spouting nonsense,</p>
+        <p>mistaking a sedation with the stench of rot,</p>
+        <p>for the divine.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- ASPHYXIATED CAMELS -->
+    <div class="poem-entry part-a reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals III</span>
+      </div>
+      <h2 class="poem-title">Asphyxiated Camels</h2>
+      <span class="poem-title-sa">श्वास-अवरुद्ध ऊँट</span>
+      <div class="poem-body">
+        <p>I tried to find God,</p>
+        <p>at the end of a cigarette.</p>
+        <p>Endlessly philosophy,</p>
+        <p>romanticizing him,</p>
+        <p>was weaved like an orchestra,</p>
+        <p>painting a magnum opus,</p>
+        <p>out of carefree, floating nicotine pastel,</p>
+        <p>yet in the dissipating head rush,</p>
+        <p>there was only dissonance,</p>
+        <p>silence,</p>
+        <p>then emptiness.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- HONEY POOL -->
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals IV</span>
+      </div>
+      <h2 class="poem-title">The Honey Pool of Desire</h2>
+      <span class="poem-title-sa" style="text-align:center; display:block; margin-bottom:20px;">इच्छा का मधु कुण्ड</span>
+      <div class="poem-body">
+        <p>The pool of honey,</p>
+        <p>named Desire,</p>
+        <p>promises satiation,</p>
+        <p>but in the fine print,</p>
+        <p>is detailed,</p>
+        <p>the diabetic daydream,</p>
+        <p>and a stagnant stickiness,</p>
+        <p>that our hunger,</p>
+        <p>wilfully ignores.</p>
+        <p style="margin-top:16px; font-size:0.95rem; opacity:0.6;">Just one more bite.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- AN ORCHESTRA OF BLACK DAFFODILS -->
+    <div class="poem-entry part-a reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals V</span>
+      </div>
+      <h2 class="poem-title">An Orchestra of Black Daffodils</h2>
+      <span class="poem-title-sa">काले डैफोडिल का वाद्यवृंद</span>
+      <div class="poem-body">
+        <p>All exuberance and terror,</p>
+        <p>dances on your lily flavored fingernails,</p>
+        <p>ethereal burial of all our disturbances,</p>
+        <p>into whatever flesh there is to hold,</p>
+        <p>and from the centre of our eyes,</p>
+        <p>unfurls a million blooming lotus flowers,</p>
+        <p>the nectar of which,</p>
+        <p>when drunk fully,</p>
+        <p>dries into dark, black daffodils,</p>
+        <p>in the numbness of which,</p>
+        <p>we lie,</p>
+        <p>wondering if the promises,</p>
+        <p>of this fleeting euphoria,</p>
+        <p>bleeds into something else.</p>
+        <p>Farewell,</p>
+        <p>until tomorrow,</p>
+        <p>when we shall do it,</p>
+        <p>all again.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- Short form cluster -->
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals VI</span>
+      </div>
+      <h2 class="poem-title">Floral Butcher</h2>
+      <span class="poem-title-sa" style="text-align:center; display:block; margin-bottom:20px;">फूलों का कसाई</span>
+      <div class="poem-body">
+        <p>The rose weeps heavily,</p>
+        <p>nestled in the comfort,</p>
+        <p>of a snug flower vase,</p>
+        <p>but screams in glee,</p>
+        <p>when it's tender skeletal stem</p>
+        <p>is cut</p>
+        <p>offering no resistance.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals VII</span>
+      </div>
+      <h2 class="poem-title">Euphoria Strangle</h2>
+      <span class="poem-title-sa" style="text-align:center; display:block; margin-bottom:20px;">उत्साह का गला घोंटना</span>
+      <div class="poem-body">
+        <p>Paradise,</p>
+        <p>is always</p>
+        <p>a sip, snort, puff and fuck</p>
+        <p>away,</p>
+        <p>promising to keep company,</p>
+        <p>but disappearing just as quick.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- CHERRY BLOSSOM -->
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals VIII</span>
+      </div>
+      <h2 class="poem-title">Cherry Blossom</h2>
+      <span class="poem-title-sa" style="text-align:center; display:block; margin-bottom:20px;">चेरी ब्लॉसम</span>
+      <div class="poem-body">
+        <p>Passion is a cherry blossom</p>
+        <p>slathered in viscous spit,</p>
+        <p>an idol to which we weep,</p>
+        <p>when it wilts.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- EMPEROR PEASANT -->
+    <div class="poem-entry part-a reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals IX</span>
+      </div>
+      <h2 class="poem-title">Emperor Peasant</h2>
+      <span class="poem-title-sa">सम्राट किसान</span>
+      <div class="poem-body">
+        <p>I drape myself,</p>
+        <p>with the suave of an Emperor,</p>
+        <p>sauntering with soliloquies,</p>
+        <p>spewed with hesitation none,</p>
+        <p>undone swooning swan necks,</p>
+        <p>choked between loving hands.</p>
+        <p>Yet after her gasping,</p>
+        <p>and a final kiss on the cheek,</p>
+        <p>the evaporated high,</p>
+        <p>condenses, densely,</p>
+        <p>reminding myself,</p>
+        <p>that distraction strangulation,</p>
+        <p>only suffocates purpose,</p>
+        <p>asphyxiating his generosity,</p>
+        <p>with a puddle of pleasant memories</p>
+        <p>and nothing else.</p>
+        <br/>
+        <p>I choose to barter,</p>
+        <p>this imaginary saliva kingdumb,</p>
+        <p>for a higher Rasa,</p>
+        <p>that calls to me.</p>
+        <br/>
+        <p style="color: var(--rose);">This is the last time,</p>
+        <p style="color: var(--rose);">I promise,</p>
+        <p style="color: var(--rose);">To this love,</p>
+        <p style="color: var(--rose);">I am but a peasant.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- RUNNERS HIGH -->
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Profanity Petals X</span>
+      </div>
+      <h2 class="poem-title">Runner's High</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">धावक का उत्साह</span>
+      <div class="poem-body">
+        <p>Run on the hedonic treadmill,</p>
+        <p>sweating bullets of pleasure,</p>
+        <p>diamond beads, suspended in air</p>
+        <p>perfect for a fleeting moment,</p>
+        <p>to recognize that</p>
+        <p>the price of pleasure's peak,</p>
+        <p>is the plateau of the soul.</p>
+        <p style="margin-top:12px; opacity:0.6; font-size:0.9rem;">Maybe one more sprint,</p>
+        <p style="opacity:0.6; font-size:0.9rem;">vigorously so,</p>
+        <p style="opacity:0.6; font-size:0.9rem;">before I turn the thing off.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- Shattered Mask haiku -->
+    <div class="poem-entry part-a haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">The Sutra of a Shattered Mask · टूटे मुखौटे का सूत्र</span>
+      </div>
+      <div class="poem-body" style="font-size:1.15rem;">
+        <p>Firm in indulgence,</p>
+        <p>the Jester is pulverized,</p>
+        <p style="color: var(--gold);">Now a Wanderer.</p>
+      </div>
+    </div>
+
+  </div><!-- /poems-section part a -->
+
+  <!-- ═══════════════════════════════════════
+       PART TWO — SACRED EMBERS
+  ══════════════════════════════════════════ -->
+  <div id="part-b" class="part-divider part-b-divider">
+    <div class="part-divider-inner reveal">
+      <span class="part-divider-trident">🔱</span>
+      <span class="part-divider-part">Part Two · भाग दो</span>
+      <span class="part-divider-title">Sacred Embers</span>
+      <span class="part-divider-sa">पवित्र अंगारे</span>
+      <p class="part-divider-desc">
+        The standing trident — the ascent through fire.<br/>
+        The Wanderer descends into himself and finds the Mystic.
+      </p>
+    </div>
+  </div>
+
+  <div class="poems-section">
+
+    <!-- GOD AS A KNIFE -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers I &nbsp;·&nbsp; पवित्र अंगारे</span>
+      </div>
+      <h2 class="poem-title">God as a Knife</h2>
+      <span class="poem-title-sa">ईश्वर एक चाकू की तरह</span>
+      <div class="poem-body drop-cap">
+        <p>The twisting, blood soaked knife,</p>
+        <p>meanders within the tender ribcage,</p>
+        <p>ever so slightly scraping,</p>
+        <p>initials of pain into the bone,</p>
+        <p>and whirling in a frenzy,</p>
+        <p>into the unprotected tender heart.</p>
+        <p>Yet,</p>
+        <p>even the atrocity of this blade,</p>
+        <p>has a golden hilt,</p>
+        <p>that screams of an OHM,</p>
+        <p>and wails a wet bead of growth,</p>
+        <p>scented of Kali.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- JASMINE -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers II</span>
+      </div>
+      <h2 class="poem-title">Jasmine</h2>
+      <span class="poem-title-sa">चमेली</span>
+      <div class="poem-body">
+        <p>Led by pull</p>
+        <p>of external sensations,</p>
+        <p>longing for touch,</p>
+        <p>burdened by the echoes,</p>
+        <p>of a lonesome breath,</p>
+        <p>yet equally draped</p>
+        <p>is a solemn irony —</p>
+        <p>The perfect jasmine,</p>
+        <p>freshly and eternally bloomed,</p>
+        <p>exists already within the one,</p>
+        <p>that seeks it,</p>
+        <p>and in its realization,</p>
+        <p>is made aware the garden,</p>
+        <p>of its floral mystique.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- MOTION SICKNESS -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers III</span>
+      </div>
+      <h2 class="poem-title">Motion Sickness</h2>
+      <span class="poem-title-sa">गति बीमारी</span>
+      <div class="poem-body">
+        <p>Then there's the duality,</p>
+        <p>seductive, dancing temptress,</p>
+        <p>pirouette from stress to bliss,</p>
+        <p>tip toeing between the lines,</p>
+        <p>of morality and momentary immortality,</p>
+        <br/>
+        <p>In both its qualities,</p>
+        <p>of cigarettes smoked in a prayer room,</p>
+        <p>unprotected sex in a shrine,</p>
+        <p>swear words in a sermon,</p>
+        <p>and an adventurous nun in the confession booth,</p>
+        <p>there lies both the beauty,</p>
+        <p>and the devastating imperfection,</p>
+        <p>that being human brings.</p>
+        <br/>
+        <p style="color: var(--sacred);">Attach yourself to neither,</p>
+        <p style="color: var(--sacred);">but do not forget,</p>
+        <p style="color: var(--sacred);">to enjoy the absurdity,</p>
+        <p style="color: var(--sacred);">as this life,</p>
+        <p style="color: var(--sacred);">is a gift of ups and downs,</p>
+        <p style="color: var(--sacred);">as long as you manage,</p>
+        <p style="color: var(--sacred);">the motion sickness,</p>
+        <p style="color: var(--sacred);">of change.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- Short sacred poems cluster -->
+    <div class="poem-entry part-b haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers IV</span>
+      </div>
+      <h2 class="poem-title">Bliss Pose</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">आनंद मुद्रा</span>
+      <div class="poem-body">
+        <p>The most sacred pose,</p>
+        <p>is stillness.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <div class="poem-entry part-b haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers V</span>
+      </div>
+      <h2 class="poem-title">Sugar Cube Arithmetics</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">अनुशासन का अमृत</span>
+      <div class="poem-body">
+        <p>The nectar of discipline</p>
+        <p>outweighs the sweetness</p>
+        <p>of unearned pleasure.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <div class="poem-entry part-b haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers VI</span>
+      </div>
+      <h2 class="poem-title">Ego Marble</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">अहंकार का संगमरमर</span>
+      <div class="poem-body">
+        <p>Carve the marble,</p>
+        <p>of the Ego,</p>
+        <p>to reveal the sculpture,</p>
+        <p>of the Soul.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <div class="poem-entry part-b haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers VII</span>
+      </div>
+      <h2 class="poem-title">Rice Grain Humility</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">चावल की विनम्रता</span>
+      <div class="poem-body">
+        <p>Humility,</p>
+        <p>is to be the grain of rice,</p>
+        <p>and realize its distinct, powerful purpose.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- DHYANA -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers VIII</span>
+      </div>
+      <h2 class="poem-title">Dhyana</h2>
+      <span class="poem-title-sa">ध्यान</span>
+      <div class="poem-body">
+        <p>I tried to find God,</p>
+        <p>in meditation.</p>
+        <p>The thoughts began to pummel,</p>
+        <p>my innocent, unprepared Spirit,</p>
+        <p>yet a quiet, guiding light,</p>
+        <p>began to beam like a lamp,</p>
+        <p>rays piercing through the black mud,</p>
+        <p>and his essence was not seen as image,</p>
+        <p>but felt as energy.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- HATHA HALCYON -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers IX</span>
+      </div>
+      <h2 class="poem-title">Hatha Halcyon</h2>
+      <span class="poem-title-sa">हठ शान्ति</span>
+      <div class="poem-body">
+        <p>Then I stopped,</p>
+        <p>trying to find God,</p>
+        <p>but began becoming,</p>
+        <p>a beacon for his visit,</p>
+        <p>as energetic brightness,</p>
+        <p>purified and present,</p>
+        <p>stillness embodied,</p>
+        <p>personified mysticism.</p>
+        <p>In the lack of seeking,</p>
+        <p>he arrived,</p>
+        <p>and then I realized,</p>
+        <p>he was never hiding,</p>
+        <p style="color:var(--sacred);">but only waiting to be seen —</p>
+        <p style="color:var(--sacred); font-size:1.15rem; margin-top:8px;">within.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- ROSE WATER RAZOR -->
+    <div class="poem-entry part-b haiku reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers X</span>
+      </div>
+      <h2 class="poem-title">Rose Water Razor</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:20px;">गुलाब जल रेजर</span>
+      <div class="poem-body">
+        <p>God is razor blade,</p>
+        <p>dipped in rose water,</p>
+        <p>that cuts through illusion,</p>
+        <p>with fragrant benevolence.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- ZENFACED -->
+    <div class="poem-entry part-b reveal">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Sacred Embers XI</span>
+      </div>
+      <h2 class="poem-title">Zenfaced</h2>
+      <span class="poem-title-sa">ज़ेन मुख</span>
+      <div class="poem-body drop-cap">
+        <p>In the solitude of an orange cotton mat,</p>
+        <p>the memories of a distant lifetime flash —</p>
+        <p>a flowing river, reflects the emptiness</p>
+        <p>through echoing laughter laced with cheap red wine,</p>
+        <p>acidic arousal and intoxication</p>
+        <p>accentuated with the hedonic confetti — a cigarette</p>
+        <p>hanging from my cracked lips.</p>
+        <br/>
+        <p>Some girl, yet to be a woman</p>
+        <p>and I, the inner kingdom usurped by childishness,</p>
+        <p>meander around our desire</p>
+        <p>partially indulgent, totally lost.</p>
+        <br/>
+        <p>Yet,</p>
+        <p>in one conscious inhalation,</p>
+        <p>sunlight consumed voraciously,</p>
+        <p>yoga drunk from the divine</p>
+        <p>and the curtailed, still pond of the mind,</p>
+        <p style="color: var(--sacred); font-size:1.15rem; margin-top:8px;">Transcendence is the drug,</p>
+        <p style="color: var(--sacred);">no longer numb, but fully feeling —</p>
+        <p style="color: var(--gold); font-family:'Cinzel',serif; font-size:1rem; letter-spacing:0.2em; font-style:normal; margin-top:12px;">ZENFACED.</p>
+      </div>
+    </div>
+    <div class="poem-separator">· · ·</div>
+
+    <!-- EPILOGUE TANDAVA -->
+    <div class="poem-entry part-b reveal" style="max-width:680px;">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Epilogue · Tandava · ताण्डव</span>
+      </div>
+      <h2 class="poem-title">Tandava</h2>
+      <span class="poem-title-sa">ताण्डव — The Dance of Shiva</span>
+      <div class="poem-body">
+        <p>When I look up,</p>
+        <p>There is not light,</p>
+        <p>but an effulgent darkness,</p>
+        <p>to which I am carried</p>
+        <p>on the slippery back of a Cobra.</p>
+        <br/>
+        <p>From its flickering tongue,</p>
+        <p>Steps out a being,</p>
+        <p>That I recognize as Shiva.</p>
+        <br/>
+        <p>The golden trident, gleams with a quieter glow</p>
+        <p>His entire body coated in a dark azure blue,</p>
+        <p>Borders of a deep red adorning his third eye.</p>
+        <br/>
+        <p>He dances with utmost ferocity,</p>
+        <p>Tongue out, dreadlocks tempestuously lashing into the air,</p>
+        <p>Havoc, Chaos and Destruction,</p>
+        <p>All bowing down in adoration.</p>
+        <br/>
+        <p>I stand unmoving, eyes closed, absorbed.</p>
+        <br/>
+        <p>The violence stops.</p>
+        <br/>
+        <p>From the remnants of destruction,</p>
+        <p>emerges a floral tapestry —</p>
+        <p>petals of a deep red rose,</p>
+        <p>fall in a slow, careless motion,</p>
+        <p>cradled by the palms of Shakti</p>
+        <p>too delicate for the buzzing ground.</p>
+        <br/>
+        <p>A single tear of Shiva,</p>
+        <p>leaks from his eye,</p>
+        <p>forming a pool of water,</p>
+        <p>upon which the petals swim.</p>
+        <br/>
+        <p>In the reflection</p>
+        <p>Of the rose water,</p>
+        <p style="color: var(--gold);">I see myself</p>
+        <p style="color: var(--gold);">Stripped away</p>
+        <p style="color: var(--gold);">But whole.</p>
+      </div>
+    </div>
+
+    <!-- Final Sutra -->
+    <div class="poem-entry part-b haiku reveal" style="margin-bottom: 40px;">
+      <div class="poem-running-head">
+        <span class="poem-running-label">The Sutra of the Fire Mystic · अग्नि रहस्यवादी सूत्र</span>
+      </div>
+      <div class="poem-body" style="font-size:1.15rem;">
+        <p>With a glowing fire,</p>
+        <p>salvation trails in each step,</p>
+        <p style="color: var(--gold);">towards a true God.</p>
+      </div>
+    </div>
+
+    <!-- Rebellion of Breath -->
+    <div class="poem-entry part-b haiku reveal" style="max-width:520px;">
+      <div class="poem-running-head">
+        <span class="poem-running-label">Final Verse · अंतिम श्लोक</span>
+      </div>
+      <h2 class="poem-title">The Rebellion of Breath</h2>
+      <span class="poem-title-sa" style="text-align:center;display:block;margin-bottom:24px;">श्वास का विद्रोह</span>
+      <div class="poem-body">
+        <p>Inhale primordial chaos,</p>
+        <p>exhale liberation's smoke,</p>
+        <p>and savor the scent in between,</p>
+        <p>of the universe twirling itself,</p>
+        <p>from mystery to miracle.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding: 60px 0 40px; font-family:'Noto Serif Devanagari',serif; font-size:2rem; color:var(--gold); opacity:0.5; letter-spacing:0.5em;">
+      ॐ
+    </div>
+
+  </div><!-- /poems-section part b -->
+
+  <!-- ═══ CHARACTERS ══════════════════════════ -->
+  <section id="characters">
+    <div class="characters-header reveal">
+      <span class="characters-label">The Dramatis Personae · पात्र</span>
+      <h2 class="characters-title">The Souls of the Garden</h2>
+    </div>
+    <div class="characters-grid">
+      <div class="character-card char-jester reveal">
+        <span class="char-symbol">🃏</span>
+        <span class="char-name">The Jester</span>
+        <span class="char-name-sa">विदूषक</span>
+        <p class="char-arc">The unhealthy mystic who leans toward self-destruction. He feasts on indulgence wearing pompousness like a birthmark, until the Garden devours him. The jester sutra: comedy in the face of tragedy.</p>
+      </div>
+      <div class="character-card char-maya reveal">
+        <span class="char-symbol">🌹</span>
+        <span class="char-name">Maya</span>
+        <span class="char-name-sa">माया — Illusion</span>
+        <p class="char-arc">A beautiful woman who is illusion incarnate. She appears with the perfume of a thousand gardens, eyes holding the naked full moon. She offers the Jester everything — and dissolves into a crystal of reflection.</p>
+      </div>
+      <div class="character-card char-cyclops reveal">
+        <span class="char-symbol">👁</span>
+        <span class="char-name">The Gut Cyclops</span>
+        <span class="char-name-sa">पेट का चक्षुश — Indulgence</span>
+        <p class="char-arc">A manifestation of desire and craving. He stands at the gate, razor sharp teeth protruding from intestinal walls, adorned with the heads of those who faltered at his stare. He is conquered only by stillness.</p>
+      </div>
+      <div class="character-card char-agni reveal">
+        <span class="char-symbol">🔥</span>
+        <span class="char-name">Agni</span>
+        <span class="char-name-sa">अग्नि — Sacred Fire</span>
+        <p class="char-arc">The dying flame that the Wanderer tends. His fire dims with every indulgence and burns brighter with every honest reckoning. He becomes the final companion — and ultimately dwells within the Mystic's own breath.</p>
+      </div>
+      <div class="character-card char-shakti reveal">
+        <span class="char-symbol">⚡</span>
+        <span class="char-name">Shakti</span>
+        <span class="char-name-sa">शक्ति — Divine Power</span>
+        <p class="char-arc">She arrives in a celestial chariot, the melted moon coiled in her hair. She offers the Enlightened One a final test — the chalice, then her naked body. The portal to the other world rests within her, and she is also Maya.</p>
+      </div>
+      <div class="character-card char-mystic reveal">
+        <span class="char-symbol">🕉</span>
+        <span class="char-name">The Mystic</span>
+        <span class="char-name-sa">रहस्यवादी — The Arrived One</span>
+        <p class="char-arc">What the Jester becomes after the mask shatters, the Cyclops is faced, and Agni is tended. Gray-haired, unkempt but wise. A lotus floats above his head. His third eye opens. He walks toward Shiva. He understands.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MOTIFS ═══════════════════════════════ -->
+  <section id="motifs">
+    <span class="motifs-title">Sacred Symbols &amp; Motifs · प्रतीक</span>
+    <div class="motif-row">
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🌹</span>
+        <span class="motif-label">The Rose</span>
+        <span class="motif-sa">गुलाब — resists and wounds</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">💀</span>
+        <span class="motif-label">The Skull</span>
+        <span class="motif-sa">अस्थि — vanitas</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🌸</span>
+        <span class="motif-label">Jasmine</span>
+        <span class="motif-sa">चमेली — the inner bloom</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🔱</span>
+        <span class="motif-label">Trident</span>
+        <span class="motif-sa">त्रिशूल — creation, preservation, dissolution</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🪷</span>
+        <span class="motif-label">Lotus</span>
+        <span class="motif-sa">कमल — blooms from mud</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🐍</span>
+        <span class="motif-label">Cobra</span>
+        <span class="motif-sa">सर्प — destruction that creates</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🔥</span>
+        <span class="motif-label">Sacred Fire</span>
+        <span class="motif-sa">अग्नि — purification</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">ॐ</span>
+        <span class="motif-label">OHM</span>
+        <span class="motif-sa">OM — the original sound</span>
+      </div>
+      <div class="motif-item reveal">
+        <span class="motif-symbol">🌿</span>
+        <span class="motif-label">Sandalwood · Tulsi</span>
+        <span class="motif-sa">चंदन · तुलसी — the sacred scent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT ════════════════════════════════ -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-left reveal">
+        <span class="about-label">Structure · संरचना</span>
+        <div class="about-structure-title">The Lotus Sutras</div>
+        <div class="about-structure-item">
+          <span class="about-si-label">Prologue</span>
+          <span class="about-si-name">Behind the Veil is Jest <span class="about-si-sa">प्रस्तावना</span></span>
+        </div>
+        <div class="about-structure-item">
+          <span class="about-si-label">Part One — Reversed Trident</span>
+          <span class="about-si-name">Profanity Petals <span class="about-si-sa">अपवित्रता</span></span>
+        </div>
+        <div class="about-structure-item">
+          <span class="about-si-label">Interlude</span>
+          <span class="about-si-name">Chaos Mandala <span class="about-si-sa">अराजकता मंडल</span></span>
+        </div>
+        <div class="about-structure-item">
+          <span class="about-si-label">Part Two — Standing Trident</span>
+          <span class="about-si-name">Sacred Embers <span class="about-si-sa">पवित्र अंगारे</span></span>
+        </div>
+        <div class="about-structure-item">
+          <span class="about-si-label">Epilogue</span>
+          <span class="about-si-name">Tandava <span class="about-si-sa">ताण्डव</span></span>
+        </div>
+      </div>
+      <div class="about-right reveal">
+        <div class="about-body">
+          <p>The Lotus Sutras is a book of profanity and prayer — two sides of the same OM. It follows a single consciousness through the complete arc of the tantric path: indulgence, confrontation, dissolution, and the terrifying clarity of what remains.</p>
+          <p>The Jester is not the villain. He is the self that has not yet faced itself — witty, excessive, genuinely charming, ultimately hollow. His mask does not crack until Maya, the ultimate illusion, scratches through it during the most intimate act possible.</p>
+          <p>What emerges is the Wanderer — wounded, real, standing before a dying fire called Agni with the question: will you tend this flame, or go back for one more bottle?</p>
+          <p>The book draws from the Panchamakara of Tantra (the five sacred transgressions), the Bhagavad Gita's instruction on desire and detachment, and the oldest observation in mysticism: the same appetite that destroys you, directed inward, becomes the fire that illuminates.</p>
+          <p style="color: var(--sacred); font-style:italic;">The Profanity Petals and Sacred Embers are not opposites. They are the same garden, seen from different eyes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ACQUIRE ══════════════════════════════ -->
+  <section id="acquire">
+    <div class="acquire-bg"></div>
+    <span class="acquire-label">Receive the Book · पुस्तक प्राप्त करें</span>
+    <div class="acquire-title">The Lotus Sutras</div>
+    <p class="acquire-subtitle">
+      First edition. Limited run. Black ink on parchment.<br/>
+      Each copy hand-stamped with the OHM seal.
+    </p>
+    <div class="acquire-options">
+      <a href="#" class="acquire-btn acquire-btn-primary">Order the First Edition</a>
+      <a href="#" class="acquire-btn acquire-btn-secondary">Spoken Word Album</a>
+      <a href="#" class="acquire-btn acquire-btn-secondary">Garden of Moksha</a>
+    </div>
+    <p class="acquire-edition-note">
+      Limited edition with coloured pages and additional artwork available.<br/>
+      <span style="font-family:'Noto Serif Devanagari',serif; font-size:0.8rem;">सीमित संस्करण · रंगीन पृष्ठ · अतिरिक्त कलाकृति</span>
+    </p>
+  </section>
+
+  <!-- ═══ FOOTER ═══════════════════════════════ -->
+  <footer>
+    <span class="footer-om">ॐ</span>
+    <span class="footer-brand">The Lotus Sutras</span>
+    <p class="footer-tagline">लोटस सूत्र · Garden of Moksha</p>
+    <nav class="footer-links">
+      <a href="#prologue">Prologue</a>
+      <a href="#part-a">Profanity Petals</a>
+      <a href="#part-b">Sacred Embers</a>
+      <a href="#characters">Characters</a>
+      <a href="#acquire">Acquire</a>
+    </nav>
+    <span class="footer-symbols">🌹 💀 🔱 🪷 🔥</span>
+    <p class="footer-copy">
+      © Garden of Moksha &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; सर्वम् शिवमयम्
+    </p>
+  </footer>
+
+</div><!-- /main -->
+
+<script>
+/* ─── GATE ─── */
+function openVeil() {
+  document.getElementById('gate').classList.add('away');
+  const main = document.getElementById('main');
+  main.classList.add('revealed');
+  sessionStorage.setItem('ls_entered','1');
+}
+if (sessionStorage.getItem('ls_entered')) {
+  document.getElementById('gate').classList.add('away');
+  document.getElementById('main').classList.add('revealed');
+}
+
+/* ─── SCROLL REVEAL ─── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('on'), (e.target.dataset.i || 0) * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.dataset.i = i % 5;
+  observer.observe(el);
+});
+
+/* ─── NAV active ─── */
+document.querySelectorAll('section[id], div[id]').forEach(sec => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.nav-items a').forEach(a => {
+          a.style.color = a.getAttribute('href') === '#'+e.target.id ? 'var(--gold)' : '';
+        });
+      }
+    });
+  }, { threshold: 0.3 }).observe(sec);
+});
+</script>
+</body>
+</html>
