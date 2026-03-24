@@ -8,24 +8,21 @@
 <style>
 body {
   margin: 0;
-  background: #050505;
+  background: radial-gradient(circle at center, #0a0a0a, #000);
   color: #f5f5f5;
-  font-family: 'Georgia', serif;
+  font-family: Georgia, serif;
   overflow-x: hidden;
 }
 
-/* Sanskrit + English Title */
-.title {
-  font-size: 2.8rem;
-  letter-spacing: 3px;
+/* PARTICLE CANVAS */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 
-.subtitle {
-  font-size: 1rem;
-  opacity: 0.6;
-}
-
-/* Lotus Entry */
+/* HERO */
 .hero {
   height: 100vh;
   display: flex;
@@ -34,20 +31,208 @@ body {
   flex-direction: column;
 }
 
+.title {
+  font-size: 3rem;
+  letter-spacing: 4px;
+}
+
+.subtitle {
+  opacity: 0.5;
+  margin-bottom: 30px;
+}
+
+/* LOTUS + MANDALA */
 .lotus {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
   position: relative;
+  cursor: pointer;
+}
+
+.mandala {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 1px dashed rgba(255,255,255,0.08);
+  border-radius: 50%;
+  animation: spin 20s linear infinite;
+}
+
+.lotus-symbol {
+  font-size: 50px;
+  position: absolute;
+  top: 45px;
+  left: 45px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.lotus:hover {
+  transform: scale(1.1);
   transition: 0.6s;
 }
 
-.lotus:before {
-  content: "✿";
-  font-size: 40px;
-  opacity:
+/* SECTIONS */
+section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  opacity: 0;
+  transform: translateY(60px);
+  transition: 1.5s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+h2 {
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+p {
+  max-width: 500px;
+  opacity: 0.7;
+}
+
+/* MANTRA */
+.mantra {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.1;
+  animation: breathe 6s infinite;
+}
+
+@keyframes breathe {
+  0%,100% { opacity: 0.05; }
+  50% { opacity: 0.2; }
+}
+
+/* SYMBOLS */
+.symbol {
+  position: fixed;
+  opacity: 0.07;
+  font-size: 22px;
+}
+
+.trident { top: 20px; right: 20px; }
+.eye { top: 50%; left: 10px; }
+.rose { bottom: 30%; right: 10px; }
+.jasmine { top: 30%; right: 40px; }
+
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="symbol trident">🔱</div>
+<div class="symbol eye">👁</div>
+<div class="symbol rose">🌹</div>
+<div class="symbol jasmine">❀</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="title">Garden of Moksha</div>
+  <div class="subtitle">मोक्षस्य उद्यानम्</div>
+
+  <div class="lotus" onclick="enter()">
+    <div class="mandala"></div>
+    <div class="lotus-symbol">✿</div>
+  </div>
+</section>
+
+<!-- SECTIONS -->
+<section><div><h2>Rose Garden</h2><p>Poetry dissolves into fragrance.</p></div></section>
+<section><div><h2>Jasmine Chamber</h2><p>Prose unfolds like illusion.</p></div></section>
+<section><div><h2>Sound of Apsaras</h2><p>Music as transcendence.</p></div></section>
+<section><div><h2>Living Presence</h2><p>The moment breathes itself.</p></div></section>
+<section><div><h2>Sacred Exchange</h2><p>Contact the garden.</p></div></section>
+<section><div><h2>Temple Offerings</h2><p>Fragments made tangible.</p></div></section>
+
+<div class="mantra">
+ॐ नमः शिवाय • ॐ नमः शिवाय • ॐ नमः शिवाय
+</div>
+
+<script>
+/* ENTER SCROLL */
+function enter() {
+  window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+}
+
+/* FADE SECTIONS */
+const sections = document.querySelectorAll("section");
+
+function reveal() {
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top < window.innerHeight - 100) {
+      sec.classList.add("visible");
+    }
+  });
+}
+
+window.addEventListener("scroll", reveal);
+reveal();
+
+/* PARTICLES (ASH / EMBERS) */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2,
+    d: Math.random() * 1
+  });
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  ctx.beginPath();
+
+  particles.forEach(p => {
+    ctx.moveTo(p.x, p.y);
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+  });
+
+  ctx.fill();
+  update();
+}
+
+function update() {
+  particles.forEach(p => {
+    p.y -= p.d;
+    if (p.y < 0) {
+      p.y = canvas.height;
+      p.x = Math.random() * canvas.width;
+    }
+  });
+}
+
+setInterval(draw, 33);
+</script>
+
+</body>
+</html>
